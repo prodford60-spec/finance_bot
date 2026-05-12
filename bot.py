@@ -1,0 +1,25 @@
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
+from config import BOT_TOKEN
+from database import init_db
+from handlers import start, payment, ai_chat
+
+logging.basicConfig(level=logging.INFO)
+
+async def main():
+    await init_db()
+
+    bot = Bot(token=BOT_TOKEN)
+    dp = Dispatcher(storage=MemoryStorage())
+
+    dp.include_router(start.router)
+    dp.include_router(payment.router)
+    dp.include_router(ai_chat.router)
+
+    print("✅ Бот запущен! Нажми Ctrl+C чтобы остановить.")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
